@@ -11,7 +11,6 @@ from config import config as cf
 from config.pyvidplayer import Video
 from config.game_setup import *
 
-#TODO add button for subsitution
 
 # from DB
 ACTIONS_IDS = {'shot': 1, 'pass': 2, 'foul': 3, 'throw in': 4, 'corner': 5,
@@ -58,7 +57,7 @@ def get_text_field(button_value, team, rt, lt):
     away_data = {0: a_passes, 1: a_shots, 2: a_lobs, 3: a_fouls,
                  4: a_offsides, 5: a_score}
 
-    # RT or LT pressed together with foul button X
+    # RT or LT pressed together with foul button Y
     if button_value == 3 and rt:
         if team:
             return h_red_cards
@@ -75,6 +74,12 @@ def get_text_field(button_value, team, rt, lt):
             return h_penalties
         else:
             return a_penalties
+    # LT pressed together with lob button X
+    elif button_value == 2 and lt:
+        if team:
+            return h_subs
+        else:
+            return a_subs
 
     try:
         if team:  # true means home_team
