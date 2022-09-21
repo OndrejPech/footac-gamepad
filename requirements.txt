@@ -1,0 +1,4 @@
+pygame==2.1.2
+
+ffpyplayer~=4.3.5
+pymediainfo~=5.1.0
