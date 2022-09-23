@@ -104,26 +104,25 @@ def get_text_field_crosspad(crosspad_value: tuple, team) -> TextField:
         return away_data[crosspad_value]
 
 
-def point_team_with_ball(l_axis, r_axis):
+def get_bool_from_axis(l_axis, r_axis):
     """
     check both analog sticks
-    left one is stronger(has advance) than right one
-    if stick is pointing up> return True,down -> return False
-
+    left one is stronger(has advance) than the right one
+    can return True, False or None
     """
     if abs(l_axis) > SENSITIVITY:  # left analog in action:
-        if l_axis < SENSITIVITY:  # pointing upwards
+        if l_axis < SENSITIVITY:  # pointing upwards on y or right on x
             return True
-        else:  # # pointing downwards
+        else:  # pointing downwards on y or left on x
             return False
 
     elif abs(r_axis) > SENSITIVITY:  # right analog in action:
-        if r_axis < SENSITIVITY:  # pointing upwards
+        if r_axis < SENSITIVITY:  # pointing upwards on y or right on x
             return True
-        else:  # pointing downwards
+        else:  # pointing downwards on y or left on x
             return False
 
-    else:  # no analog in action
+    else:  # no analog in action or low sensitivity on analog
         return None
 
 
@@ -316,6 +315,10 @@ a18 = TextField(Rect(0, 18 * fh, fw, fh), data_font, cf.BLACK, text='',
 # MIDDLE COLUMN
 i_time = TextField(Rect(w / 3, 0, fw, fh * 2), time_font, cf.BLACK,
                    text=timer_start_at)
+i_l_side = TextField(Rect(w / 3, 1.5* fh, fw/2, fh * 2), video_time_font,
+                     cf.LIGHT_BLACK, text='L')
+i_r_side = TextField(Rect(w / 2, 1.5* fh, fw/2, fh * 2), video_time_font,
+                     cf.LIGHT_BLACK, text='R')
 v_time = TextField(Rect(w / 3, 2 * fh, fw, fh * 2), video_time_font,
                    cf.LIGHT_BLACK, text=sec_to_string(video_time))
 i_video = TextField(Rect(w / 3, 2.3 * fh, fw, fh * 2), video_time_font,
@@ -392,6 +395,7 @@ pause_game_field = TextField(Rect(0, 0, WIDTH, HEIGHT), warning_font, cf.RED,
 
 fields = {
     h_score, i_time, a_score,
+    i_l_side,i_r_side,
     h_name, v_time, i_video, a_name,
     h_possession, i_possession, a_possession,
     h_shots, i_shots, a_shots,
@@ -417,6 +421,7 @@ for field in fields:
 
 # GAME VARIABLES inside loop
 team_with_ball = None  # {True: home_team, False: away_team, None: no team}
+field_side = None  # {True: left side, False: right side, None: no data}
 LT = False
 RT = False
 game_runs = False
@@ -453,7 +458,11 @@ while True:
         right_analog_x = active_joystick.get_axis(3)
         right_analog_y = active_joystick.get_axis(4)
 
-        team_with_ball = point_team_with_ball(left_analog_y, right_analog_y)
+        # if upwards -> True -> home_team | downwards -> False -> away_team
+        team_with_ball = get_bool_from_axis(left_analog_y, right_analog_y)
+
+        # if right -> True -> right_side | left -> False -> left_side
+        field_side = get_bool_from_axis(left_analog_x, right_analog_x)
 
     # USER INTERACTION
     for event in pygame.event.get():  # User did something.
@@ -534,6 +543,17 @@ while True:
         a_possession.value += 1
         a_name.render(color=cf.BLUE)
         h_name.render()
+
+    # RENDER field side, where is the balll
+    if field_side is None:
+        i_l_side.render()
+        i_r_side.render()
+    elif field_side:  # left side of the pitch
+        i_l_side.render(color=cf.PINK)
+        i_r_side.render()
+    else:  # right side of the pitch
+        i_l_side.render()
+        i_r_side.render(color=cf.PINK)
 
     # RENDER POSSESSION:
     total_possession = h_possession.value + a_possession.value
