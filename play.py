@@ -104,31 +104,27 @@ def get_text_field_crosspad(crosspad_value: tuple, team) -> TextField:
         return away_data[crosspad_value]
 
 
-def point_team_with_ball(l_analog_x, r_analog_x, home_team_is_left_side):
+def point_team_with_ball(l_axis, r_axis):
     """
     check both analog sticks
-    left one is stronger than right one
-    if stick is pointing to left-> return False,to right -> return True
+    left one is stronger(has advance) than right one
+    if stick is pointing up> return True,down -> return False
+
     """
-    if abs(l_analog_x) > SENSITIVITY:  # left analog in action:
-        if l_analog_x < SENSITIVITY:  # pointing to left
-            boolean = False
-        else:  # pointing to right
-            boolean = True
+    if abs(l_axis) > SENSITIVITY:  # left analog in action:
+        if l_axis < SENSITIVITY:  # pointing upwards
+            return True
+        else:  # # pointing downwards
+            return False
 
-    elif abs(r_analog_x) > SENSITIVITY:  # right analog in action:
-        if r_analog_x < SENSITIVITY:  # pointing to left
-            boolean = False
-        else:  # pointing to right
-            boolean = True
+    elif abs(r_axis) > SENSITIVITY:  # right analog in action:
+        if r_axis < SENSITIVITY:  # pointing upwards
+            return True
+        else:  # pointing downwards
+            return False
 
-    else:
+    else:  # no analog in action
         return None
-
-    if home_team_is_left_side:
-        return boolean
-    else:  # swap controller sides for teams
-        return not boolean
 
 
 def string_to_ms(string_time: str) -> int:
@@ -453,9 +449,12 @@ while True:
             RT = False
 
         left_analog_x = active_joystick.get_axis(0)
+        left_analog_y = active_joystick.get_axis(1)
         right_analog_x = active_joystick.get_axis(3)
-        team_with_ball = point_team_with_ball(left_analog_x, right_analog_x,
-                                              HOME_TEAM_LEFT_PITCH)
+        right_analog_y = active_joystick.get_axis(4)
+
+        team_with_ball = point_team_with_ball(left_analog_y, right_analog_y)
+
     # USER INTERACTION
     for event in pygame.event.get():  # User did something.
 
