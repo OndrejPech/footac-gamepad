@@ -11,12 +11,17 @@ from config import config as cf
 from config.pyvidplayer import Video
 from config.game_setup import *
 
-
 # from DB
 ACTIONS_IDS = {'shot': 1, 'pass': 2, 'foul': 3, 'throw in': 4, 'corner': 5,
                'goal kick': 6, 'free kick': 7, 'substitution': 8, 'offside': 9,
                'goal': 10, 'penalty kick': 11, 'yellow card': 12,
                'red card': 13, 'lob cross': 14, }
+LEFT_SIDE_ID = 1
+RIGHT_SIDE_ID = 2
+
+always_defending_side = {'goal kick'}
+always_attacking_side = {'offside', 'corner'}
+# penalty kick can be neutral side after the game
 
 
 class TextField:
@@ -167,6 +172,24 @@ def save_to_list(team, ttype, time):
         print(f'{ttype} not in db')
         return None
 
+    if ttype in always_defending_side:
+        if team_id == right_side_team_id:
+            side = RIGHT_SIDE_ID
+        elif team_id == left_side_team_id:
+            side = LEFT_SIDE_ID
+    elif ttype in always_attacking_side:
+        if team_id == right_side_team_id:
+            side = LEFT_SIDE_ID
+        elif team_id == left_side_team_id:
+            side = RIGHT_SIDE_ID
+    else:  # action type can be on both sides
+        if field_side is None:
+            side = None  # save NULL to DB
+        elif field_side:  # left side of the pitch
+            side = LEFT_SIDE_ID
+        else:  # right side of the pitch
+            side = RIGHT_SIDE_ID
+
     match_time = ms_to_sec(time)  # in seconds to be saved in db
     human_game_time = sec_to_string(match_time)  # human-readable format
     video_time = match_time + GT_VT_DIFF  # in seconds
@@ -176,7 +199,7 @@ def save_to_list(team, ttype, time):
 
     csv_template = (human_game_time, ttype, team_name,
                     GAME_ID, type_id, team_id, opp_team_id,
-                    left_side_team_id, right_side_team_id,
+                    left_side_team_id, right_side_team_id, side,
                     match_time, video_time, human_video_time,
                     )
     print(csv_template)
@@ -214,7 +237,7 @@ h = hs  # use full height of screen
 
 # SCREEN VIDEO-part
 video_width = WIDTH - w  # use 80% for video
-video_height = video_width/1.7777  # keep video ratio
+video_height = video_width / 1.7777  # keep video ratio
 video = Video(video_file)
 video.set_size((video_width, video_height))
 video.toggle_pause()  # pause video
@@ -243,11 +266,9 @@ else:
     # SWAP SIDES
     HOME_TEAM_LEFT_PITCH = not HOME_TEAM_LEFT_PITCH
 
-
 # video player starting frame
 video_time = string_to_ms(timer_start_at) // 1000 + GT_VT_DIFF  # in sec
 video.seek(video_time)  # set frame
-
 
 # PRINT BASIC INFORMATION to TERMINAL
 print(f'PLaying first half: {first_half}')
@@ -258,7 +279,6 @@ if HOME_TEAM_LEFT_PITCH:
 else:
     print(f'Away team {AWAY_TEAM}, id:{AWAY_TEAM_ID} is on the left')
     print(f'Home team {HOME_TEAM}, id:{HOME_TEAM_ID} is on the right')
-
 
 # CREATE BACKGROUND LAYOUT
 # split screen into rectangles, width of each rect is 33.3% of total width
@@ -315,9 +335,9 @@ a18 = TextField(Rect(0, 18 * fh, fw, fh), data_font, cf.BLACK, text='',
 # MIDDLE COLUMN
 i_time = TextField(Rect(w / 3, 0, fw, fh * 2), time_font, cf.BLACK,
                    text=timer_start_at)
-i_l_side = TextField(Rect(w / 3, 1.5* fh, fw/2, fh * 2), video_time_font,
+i_l_side = TextField(Rect(w / 3, 1.5 * fh, fw / 2, fh * 2), video_time_font,
                      cf.LIGHT_BLACK, text='L')
-i_r_side = TextField(Rect(w / 2, 1.5* fh, fw/2, fh * 2), video_time_font,
+i_r_side = TextField(Rect(w / 2, 1.5 * fh, fw / 2, fh * 2), video_time_font,
                      cf.LIGHT_BLACK, text='R')
 v_time = TextField(Rect(w / 3, 2 * fh, fw, fh * 2), video_time_font,
                    cf.LIGHT_BLACK, text=sec_to_string(video_time))
@@ -329,7 +349,8 @@ i_shots = TextField(Rect(w / 3, 5 * fh, fw, fh), data_font, cf.BLACK,
                     text='Shots')
 i_passes = TextField(Rect(w / 3, 6 * fh, fw, fh), data_font, cf.BLACK,
                      text='Passes')
-i_lobs = TextField(Rect(w / 3, 7 * fh, fw, fh), data_font, cf.BLACK, text='Lobs/Crosses')
+i_lobs = TextField(Rect(w / 3, 7 * fh, fw, fh), data_font, cf.BLACK,
+                   text='Lobs/Crosses')
 i_offsides = TextField(Rect(w / 3, 8 * fh, fw, fh), data_font, cf.BLACK,
                        text='Offsides')
 i_corners = TextField(Rect(w / 3, 9 * fh, fw, fh), data_font, cf.BLACK,
@@ -395,7 +416,7 @@ pause_game_field = TextField(Rect(0, 0, WIDTH, HEIGHT), warning_font, cf.RED,
 
 fields = {
     h_score, i_time, a_score,
-    i_l_side,i_r_side,
+    i_l_side, i_r_side,
     h_name, v_time, i_video, a_name,
     h_possession, i_possession, a_possession,
     h_shots, i_shots, a_shots,
