@@ -411,7 +411,7 @@ a_penalties = TextField(Rect(w / 3 * 2, 17 * fh, fw, fh), data_font, cf.BLACK,
 c18 = TextField(Rect(w / 3 * 2, 18 * fh, fw, fh), data_font, cf.BLACK, text='',
                 anchor='midleft')
 
-pause_game_field = TextField(Rect(0, 0, ws, ws), warning_font, cf.RED,
+pause_game_field = TextField(Rect(0, 0, ws, hs), warning_font, cf.RED,
                              text='GAME PAUSED')
 
 fields = {
