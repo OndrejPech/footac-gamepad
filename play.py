@@ -225,18 +225,18 @@ pygame.init()
 
 # SCREEN SETUP
 WIDTH, HEIGHT = 1680, 752  # fit my display with space for terminal output
-screen = pygame.display.set_mode((WIDTH, HEIGHT), 0, 32)
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
 ws, hs = pygame.display.get_surface().get_size()
 pygame.display.set_caption('Footac Controller')
 FPS = 60
 clock = pygame.time.Clock()
 
 # SCREEN STATS-part
-w = WIDTH / 5  # use 20% for stats
+w = ws / 5  # use 20% for stats
 h = hs  # use full height of screen
 
 # SCREEN VIDEO-part
-video_width = WIDTH - w  # use 80% for video
+video_width = ws - w  # use 80% for video
 video_height = video_width / 1.7777  # keep video ratio
 video = Video(video_file)
 video.set_size((video_width, video_height))
@@ -411,7 +411,7 @@ a_penalties = TextField(Rect(w / 3 * 2, 17 * fh, fw, fh), data_font, cf.BLACK,
 c18 = TextField(Rect(w / 3 * 2, 18 * fh, fw, fh), data_font, cf.BLACK, text='',
                 anchor='midleft')
 
-pause_game_field = TextField(Rect(0, 0, WIDTH, HEIGHT), warning_font, cf.RED,
+pause_game_field = TextField(Rect(0, 0, ws, ws), warning_font, cf.RED,
                              text='GAME PAUSED')
 
 fields = {
