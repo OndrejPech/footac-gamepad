@@ -228,7 +228,7 @@ WIDTH, HEIGHT = 1680, 752  # fit my display with space for terminal output
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 ws, hs = pygame.display.get_surface().get_size()
 pygame.display.set_caption('Footac Controller')
-FPS = 60
+# FPS = 60
 clock = pygame.time.Clock()
 
 # SCREEN STATS-part
@@ -239,6 +239,7 @@ h = hs  # use full height of screen
 video_width = ws - w  # use 80% for video
 video_height = video_width / 1.7777  # keep video ratio
 video = Video(video_file)
+FPS = int(video.frame_rate)
 video.set_size((video_width, video_height))
 video.toggle_pause()  # pause video
 
@@ -528,6 +529,7 @@ while True:
                     video.toggle_pause()
                     save_to_csv(lines_to_save)  # save data
                     lines_to_save.clear()
+                    # print(video.frame_num*20, total_game_time)
 
             else:  # other buttons
                 # print(f"Button {event.button} pressed.")
