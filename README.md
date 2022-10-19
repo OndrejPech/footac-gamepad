@@ -16,6 +16,7 @@ Have you ever played FIFA on any gaming console? So imagine you don't control th
 buttons, depending on actions of the game. If player on the screen shoot , you press 'shot' button. If home team has a
 ball, I point analog joystick to one direction. If away team has a ball I point it to opposite direction. My programm
 reads input data from xbox controller, show it on screen during a game and save it to csv file for later usage.
+<img src="images/full program.png" width="980">
 
 ## Can I use it?
 
@@ -63,8 +64,37 @@ Program window is not resizable during running of the program at the moment, it 
 
 
 ##### Controls
+<img src="images/controller front.jpg" width="400">  <img src="images/controller back.jpg" width="400"> 
+
+After running program you see confirmation in terminal window that your controller is connected. If not please connect it to your PC/MAC.
 
 
+Use joystick(1) horizontal movement to choose which side of the field is the action taking on
+* moving left means action is on left side and L lights on the stats screen
+* moving right means action is on right side and R lights on the stats screen
+
+Use joystick(1) vertical movement to choose which team is in possession
+* moving up means home team is in possession and HOME_TEAM_NAME lights on the stats screen
+* moving down means away team is in possession and AWAY_TEAM_NAME lights on the stats screen
+
+| xbox BUTTON | button number | ACTION        |
+|:-----------:|:-------------:|:--------------|
+|      ≡      |       6       | start / pause |
+|      A      |       A       | ground pass   |
+|      X      |       X       | air pass      |
+|      B      |       B       | shot          |
+|      Y      |       Y       | foul          |
+|   Y + LT    |    Y + 14     | yellow card   |
+|   Y + RT    |    Y + 11     | red card      |
+|   B + LT    |    B + 14     | penalty       |
+|      ↓      |      8 ↓      | goal kick     |
+|      →      |      8 →      | free kick     |
+|      ↑      |      8 ↑      | corner        |
+|      ←      |      8 ←      | throw in      |
+|     LB      |       2       | offside       |
+|     RB      |       7       | goal          |
+|   X + LT    |    X + LT     | substitution  |
+joystick has to be either up for home team or down for away team when you press any action button. If no team is chosen , action is not recorded.
 
 ##### Saving data
-Every time you press pause button, program save data to csv file in your directory. The csv_template is created for my own needs. In save_to_list() method under csv_template  variable you can remove fields, which you don't want to save to csv. Or just keep it and don't worry about the csv at all :-)
+Every time you press pause button ≡, program save data to csv file in your directory. The csv_template is created for my own needs. In save_to_list() method under csv_template  variable you can remove fields, which you don't want to save to csv. Or just keep it and don't worry about the csv at all :-)
