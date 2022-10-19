@@ -94,6 +94,7 @@ Use joystick(1) vertical movement to choose which team is in possession
 |     LB      |       2       | offside       |
 |     RB      |       7       | goal          |
 |   X + LT    |    X + LT     | substitution  |
+
 joystick has to be either up for home team or down for away team when you press any action button. If no team is chosen , action is not recorded.
 
 ##### Saving data
