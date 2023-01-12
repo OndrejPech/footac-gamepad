@@ -94,7 +94,7 @@ Use joystick(1) vertical movement to choose which team is in possession
 |     RB      |       7       | goal          |
 |   X + LT    |    X + LT     | substitution  |
 
-joystick has to be either up for home team or down for away team when you press any action button. If no team is chosen, action is not recorded.
+Joystick has to be either up for home team or down for away team when you press any action button. If no team is chosen, action is not recorded.
 
 ##### Saving data
 Every time you press pause button ≡, program saves data to csv file in your directory. The csv_template is created for my own needs. In save_to_list() method under csv_template  variable you can remove fields, which you don't want to save to csv. Or just keep it and don't worry about the csv at all :-)
